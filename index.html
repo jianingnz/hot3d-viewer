@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HOT3D Viewer</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #111111;
+    --bg-card: #161616;
+    --bg-header: #1a1a1a;
+    --border: #222;
+    --text: #d4d4d4;
+    --text-heading: #f0f0f0;
+    --text-secondary: #888;
+    --accent: #c98c50;
+  }
+  [data-theme="light"] {
+    --bg: #f5f5f0;
+    --bg-card: #ffffff;
+    --bg-header: #f0efe8;
+    --border: #ddd;
+    --text: #333;
+    --text-heading: #111;
+    --text-secondary: #666;
+    --accent: #b06f2c;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text);
+               font-family: 'Inter', system-ui, sans-serif; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 48px 24px 96px; }
+
+  header { border-bottom: 1px solid var(--border); padding-bottom: 28px; margin-bottom: 36px;
+           display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; }
+  h1 { font-family: 'Playfair Display', serif; font-weight: 700;
+       font-size: 2.4rem; color: var(--text-heading); margin: 0 0 8px; letter-spacing: -0.01em; }
+  .sub { color: var(--text-secondary); font-size: 0.95rem; max-width: 760px; line-height: 1.55; }
+  .sub a { color: var(--accent); text-decoration: none; }
+  .sub a:hover { text-decoration: underline; }
+
+  .controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .controls input, .controls select, .controls button {
+    background: var(--bg-card); color: var(--text);
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px 12px; font-family: inherit; font-size: 0.9rem;
+  }
+  .controls input { width: 240px; }
+  .controls button { cursor: pointer; }
+  .controls button:hover { border-color: var(--accent); color: var(--accent); }
+  .count { color: var(--text-secondary); font-size: 0.85rem; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+          gap: 18px; }
+
+  .card { background: var(--bg-card); border: 1px solid var(--border);
+          border-radius: 8px; overflow: hidden; }
+  .card .head { background: var(--bg-header); padding: 8px 12px;
+                font-size: 0.7rem; letter-spacing: 0.1em;
+                text-transform: uppercase; color: var(--text-secondary);
+                border-bottom: 1px solid var(--border); display: flex;
+                justify-content: space-between; align-items: center; }
+  .card .stem { font-family: ui-monospace, monospace; font-size: 0.7rem;
+                color: var(--text-secondary); }
+  .card .frames { color: var(--text-secondary); }
+  .card .vidwrap { position: relative; aspect-ratio: 1/1; background: #000;
+                   cursor: pointer; }
+  .card video { width: 100%; height: 100%; object-fit: cover; display: block; background: #000; }
+  .card .placeholder { position: absolute; inset: 0; display: flex;
+                       align-items: center; justify-content: center;
+                       color: #888; font-size: 0.85rem; pointer-events: none;
+                       background: linear-gradient(180deg, #1a1a1a, #0a0a0a); }
+  .card.loaded .placeholder { display: none; }
+  .card .caption { padding: 12px 14px; font-size: 0.92rem;
+                   color: var(--text); line-height: 1.4; min-height: 48px; }
+
+  .toggle { background: transparent; border: 1px solid var(--border);
+            color: var(--text); border-radius: 6px; padding: 6px 10px;
+            cursor: pointer; font-size: 0.8rem; }
+
+  @media (max-width: 800px) {
+    .wrap { padding: 24px 16px 64px; }
+    header { flex-direction: column; align-items: flex-start; }
+    h1 { font-size: 1.8rem; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>HOT3D — moving-object sub-clips</h1>
+      <div class="sub">
+        2,534 ego-centric Aria sub-clips, one per moving object per motion window,
+        derived from <a href="https://facebookresearch.github.io/hot3d/">HOT3D</a>.
+        Re-encoded to 480&times;480 / 30 fps for browsing only — full-resolution
+        tracks &amp; videos live in the source dataset.
+      </div>
+    </div>
+    <div class="controls">
+      <input id="search" type="text" placeholder="filter caption…">
+      <select id="sort">
+        <option value="stem">sort: clip id</option>
+        <option value="long">sort: longest first</option>
+        <option value="short">sort: shortest first</option>
+      </select>
+      <span class="count" id="count"></span>
+      <button class="toggle" id="theme">light</button>
+    </div>
+  </header>
+
+  <div class="grid" id="grid"></div>
+  <div id="sentinel" style="height: 1px;"></div>
+</div>
+
+<script>
+const grid  = document.getElementById('grid');
+const cnt   = document.getElementById('count');
+const qEl   = document.getElementById('search');
+const sortEl= document.getElementById('sort');
+const sentinel = document.getElementById('sentinel');
+const PAGE = 60;
+let manifest = [];
+let view = [];
+let cursor = 0;
+
+async function load() {
+  const r = await fetch('static/data/manifest.json');
+  const j = await r.json();
+  manifest = j.hot3d;
+  apply();
+}
+
+function apply() {
+  const q = qEl.value.trim().toLowerCase();
+  view = manifest.filter(c => !q || c.caption.toLowerCase().includes(q));
+  const s = sortEl.value;
+  if (s === 'long')       view.sort((a,b) => b.n_frames - a.n_frames);
+  else if (s === 'short') view.sort((a,b) => a.n_frames - b.n_frames);
+  else                    view.sort((a,b) => a.stem < b.stem ? -1 : 1);
+  cnt.textContent = `${view.length} / ${manifest.length} clips`;
+  grid.innerHTML = '';
+  cursor = 0;
+  appendChunk();
+}
+
+function appendChunk() {
+  const end = Math.min(cursor + PAGE, view.length);
+  const frag = document.createDocumentFragment();
+  for (let i = cursor; i < end; i++) {
+    const c = view[i];
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.video = c.video;
+    card.innerHTML = `
+      <div class="head">
+        <span class="stem">${c.stem}</span>
+        <span class="frames">${c.n_frames}f · ${(c.n_frames/30).toFixed(1)}s</span>
+      </div>
+      <div class="vidwrap">
+        <video muted loop playsinline preload="none"></video>
+        <div class="placeholder">▶ click to play</div>
+      </div>
+      <div class="caption">${escapeHtml(c.caption)}</div>`;
+    hookCard(card);
+    frag.appendChild(card);
+  }
+  grid.appendChild(frag);
+  cursor = end;
+}
+
+function hookCard(card) {
+  const vid = card.querySelector('video');
+  const url = card.dataset.video;
+  const wrap = card.querySelector('.vidwrap');
+  wrap.addEventListener('click', () => {
+    if (!card.classList.contains('loaded')) {
+      vid.src = url;
+      vid.load();
+      card.classList.add('loaded');
+      vid.play();
+    } else if (vid.paused) vid.play();
+    else vid.pause();
+  });
+}
+
+const io = new IntersectionObserver((entries) => {
+  for (const e of entries) {
+    if (e.isIntersecting && cursor < view.length) appendChunk();
+  }
+}, { rootMargin: '600px' });
+io.observe(sentinel);
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+let qTimer;
+qEl.addEventListener('input',  () => { clearTimeout(qTimer); qTimer = setTimeout(apply, 150); });
+sortEl.addEventListener('change', apply);
+
+const themeBtn = document.getElementById('theme');
+function setTheme(t) {
+  document.documentElement.dataset.theme = t;
+  themeBtn.textContent = t === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('hot3d_theme', t);
+}
+setTheme(localStorage.getItem('hot3d_theme') || 'dark');
+themeBtn.addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'));
+
+load();
+</script>
+</body>
+</html>
