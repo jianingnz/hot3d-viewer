@@ -33,74 +33,84 @@
   ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
   ::-webkit-scrollbar-track { background: transparent; }
 
-  .wrap { max-width: 1200px; margin: 0 auto; padding: 48px 24px 96px; }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 36px 24px 64px; }
 
-  header { border-bottom: 1px solid var(--border); padding-bottom: 28px; margin-bottom: 36px;
-           display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; }
+  header { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 28px; }
+  header .top { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
   h1 { font-family: 'Playfair Display', serif; font-weight: 700;
-       font-size: 2.4rem; color: var(--text-heading); margin: 0 0 8px; letter-spacing: -0.01em; }
-  .sub { color: var(--text-secondary); font-size: 0.95rem; max-width: 760px; line-height: 1.55; }
+       font-size: 1.9rem; color: var(--text-heading); margin: 0 0 6px; letter-spacing: -0.01em; }
+  .sub { color: var(--text-secondary); font-size: 0.88rem; max-width: 720px; line-height: 1.55; }
   .sub a { color: var(--accent); text-decoration: none; }
   .sub a:hover { text-decoration: underline; }
 
-  .controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 18px; }
   .controls input, .controls select, .controls button {
     background: var(--bg-card); color: var(--text);
     border: 1px solid var(--border); border-radius: 6px;
-    padding: 8px 12px; font-family: inherit; font-size: 0.9rem;
+    padding: 8px 12px; font-family: inherit; font-size: 0.88rem;
   }
   .controls input { width: 240px; }
   .controls button { cursor: pointer; }
   .controls button:hover { border-color: var(--accent); color: var(--accent); }
-  .count { color: var(--text-secondary); font-size: 0.85rem; }
-
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-          gap: 18px; }
+  .controls .count { color: var(--text-secondary); font-size: 0.85rem; margin-left: auto; }
 
   .card { background: var(--bg-card); border: 1px solid var(--border);
           border-radius: 8px; overflow: hidden; }
-  .card .head { background: var(--bg-header); padding: 8px 12px;
+  .card .head { background: var(--bg-header); padding: 10px 14px;
                 font-size: 0.7rem; letter-spacing: 0.1em;
                 text-transform: uppercase; color: var(--text-secondary);
                 border-bottom: 1px solid var(--border); display: flex;
-                justify-content: space-between; align-items: center; }
-  .card .stem { font-family: ui-monospace, monospace; font-size: 0.7rem;
-                color: var(--text-secondary); }
+                justify-content: space-between; align-items: center; gap: 12px; }
+  .card .stem { font-family: ui-monospace, monospace; font-size: 0.72rem; color: var(--text-secondary); }
   .card .frames { color: var(--text-secondary); }
-  .card .vidwrap { position: relative; aspect-ratio: 1/1; background: #000;
-                   cursor: pointer; }
-  .card video { width: 100%; height: 100%; object-fit: cover; display: block; background: #000; }
-  .card .placeholder { position: absolute; inset: 0; display: flex;
-                       align-items: center; justify-content: center;
-                       color: #888; font-size: 0.85rem; pointer-events: none;
-                       background: linear-gradient(180deg, #1a1a1a, #0a0a0a); }
-  .card.loaded .placeholder { display: none; }
-  .card .caption { padding: 12px 14px; font-size: 0.92rem;
-                   color: var(--text); line-height: 1.4; min-height: 48px; }
+  .card .vidwrap { position: relative; aspect-ratio: 1/1; background: #000; }
+  .card video { width: 100%; height: 100%; object-fit: contain; display: block; background: #000; }
+  .card .caption { padding: 16px 18px; font-size: 1.0rem;
+                   color: var(--text); line-height: 1.5; }
+
+  .nav { display: flex; gap: 8px; align-items: center; justify-content: space-between;
+         margin-top: 18px; }
+  .nav .pos { color: var(--text-secondary); font-size: 0.9rem; font-family: ui-monospace, monospace; }
+  .nav .pos input { width: 80px; background: var(--bg-card); color: var(--text);
+                    border: 1px solid var(--border); border-radius: 6px;
+                    padding: 6px 8px; font-family: inherit; font-size: 0.88rem; text-align: center; }
+  .nav button { background: var(--bg-card); color: var(--text);
+                border: 1px solid var(--border); border-radius: 6px;
+                padding: 9px 18px; font-family: inherit; font-size: 0.95rem; cursor: pointer; }
+  .nav button:hover { border-color: var(--accent); color: var(--accent); }
+  .nav button:disabled { opacity: 0.35; cursor: not-allowed; }
+  .nav .group { display: flex; gap: 8px; }
+  kbd { font-family: ui-monospace, monospace; font-size: 0.72rem;
+        background: var(--bg-header); border: 1px solid var(--border);
+        border-bottom-width: 2px; border-radius: 4px;
+        padding: 1px 5px; color: var(--text-secondary); }
 
   .toggle { background: transparent; border: 1px solid var(--border);
             color: var(--text); border-radius: 6px; padding: 6px 10px;
             cursor: pointer; font-size: 0.8rem; }
 
-  @media (max-width: 800px) {
-    .wrap { padding: 24px 16px 64px; }
-    header { flex-direction: column; align-items: flex-start; }
-    h1 { font-size: 1.8rem; }
-    .grid { grid-template-columns: 1fr; }
+  .empty { padding: 48px; text-align: center; color: var(--text-secondary); }
+
+  @media (max-width: 720px) {
+    .wrap { padding: 20px 14px 48px; }
+    h1 { font-size: 1.5rem; }
+    .controls input { width: 100%; }
   }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <div>
-      <h1>HOT3D — moving-object sub-clips</h1>
-      <div class="sub">
-        2,534 ego-centric Aria sub-clips, one per moving object per motion window,
-        derived from <a href="https://facebookresearch.github.io/hot3d/">HOT3D</a>.
-        Re-encoded to 480&times;480 / 30 fps for browsing only — full-resolution
-        tracks &amp; videos live in the source dataset.
+    <div class="top">
+      <div>
+        <h1>HOT3D — moving-object sub-clips</h1>
+        <div class="sub">
+          2,534 ego-centric Aria sub-clips, one per moving object per motion window,
+          derived from <a href="https://facebookresearch.github.io/hot3d/">HOT3D</a>.
+          Re-encoded to 480&times;480 / 30 fps for browsing only.
+        </div>
       </div>
+      <button class="toggle" id="theme">light</button>
     </div>
     <div class="controls">
       <input id="search" type="text" placeholder="filter caption…">
@@ -108,26 +118,47 @@
         <option value="stem">sort: clip id</option>
         <option value="long">sort: longest first</option>
         <option value="short">sort: shortest first</option>
+        <option value="random">sort: random</option>
       </select>
       <span class="count" id="count"></span>
-      <button class="toggle" id="theme">light</button>
     </div>
   </header>
 
-  <div class="grid" id="grid"></div>
-  <div id="sentinel" style="height: 1px;"></div>
+  <div id="stage"></div>
+
+  <div class="nav" id="nav" style="display:none">
+    <div class="group">
+      <button id="prev">← prev</button>
+      <button id="next">next →</button>
+    </div>
+    <div class="pos">
+      <input id="jump" type="number" min="1" value="1"> / <span id="total">0</span>
+    </div>
+    <div class="group">
+      <button id="play">⏵ play</button>
+      <span style="color:var(--text-secondary); font-size:0.8rem; margin-left:8px;">
+        <kbd>←</kbd> <kbd>→</kbd> nav · <kbd>space</kbd> play
+      </span>
+    </div>
+  </div>
 </div>
 
 <script>
-const grid  = document.getElementById('grid');
+const stage = document.getElementById('stage');
 const cnt   = document.getElementById('count');
 const qEl   = document.getElementById('search');
 const sortEl= document.getElementById('sort');
-const sentinel = document.getElementById('sentinel');
-const PAGE = 60;
+const prevB = document.getElementById('prev');
+const nextB = document.getElementById('next');
+const playB = document.getElementById('play');
+const jumpEl= document.getElementById('jump');
+const totalEl=document.getElementById('total');
+const navEl = document.getElementById('nav');
+
 let manifest = [];
 let view = [];
-let cursor = 0;
+let idx = 0;
+let curVid = null;
 
 async function load() {
   const r = await fetch('static/data/manifest.json');
@@ -140,69 +171,68 @@ function apply() {
   const q = qEl.value.trim().toLowerCase();
   view = manifest.filter(c => !q || c.caption.toLowerCase().includes(q));
   const s = sortEl.value;
-  if (s === 'long')       view.sort((a,b) => b.n_frames - a.n_frames);
-  else if (s === 'short') view.sort((a,b) => a.n_frames - b.n_frames);
-  else                    view.sort((a,b) => a.stem < b.stem ? -1 : 1);
+  if (s === 'long')        view.sort((a,b) => b.n_frames - a.n_frames);
+  else if (s === 'short')  view.sort((a,b) => a.n_frames - b.n_frames);
+  else if (s === 'random') view.sort(() => Math.random() - 0.5);
+  else                     view.sort((a,b) => a.stem < b.stem ? -1 : 1);
   cnt.textContent = `${view.length} / ${manifest.length} clips`;
-  grid.innerHTML = '';
-  cursor = 0;
-  appendChunk();
+  totalEl.textContent = view.length;
+  jumpEl.max = view.length;
+  idx = 0;
+  show();
 }
 
-function appendChunk() {
-  const end = Math.min(cursor + PAGE, view.length);
-  const frag = document.createDocumentFragment();
-  for (let i = cursor; i < end; i++) {
-    const c = view[i];
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.dataset.video = c.video;
-    card.innerHTML = `
+function show() {
+  if (view.length === 0) {
+    stage.innerHTML = '<div class="empty">no clips match this filter</div>';
+    navEl.style.display = 'none';
+    return;
+  }
+  navEl.style.display = 'flex';
+  if (idx < 0) idx = 0;
+  if (idx >= view.length) idx = view.length - 1;
+  const c = view[idx];
+  stage.innerHTML = `
+    <div class="card">
       <div class="head">
         <span class="stem">${c.stem}</span>
-        <span class="frames">${c.n_frames}f · ${(c.n_frames/30).toFixed(1)}s</span>
+        <span class="frames">${c.n_frames} frames · ${(c.n_frames/30).toFixed(1)} s</span>
       </div>
       <div class="vidwrap">
-        <video muted loop playsinline preload="none"></video>
-        <div class="placeholder">▶ click to play</div>
+        <video id="vid" autoplay muted loop playsinline preload="auto" src="${c.video}"></video>
       </div>
-      <div class="caption">${escapeHtml(c.caption)}</div>`;
-    hookCard(card);
-    frag.appendChild(card);
-  }
-  grid.appendChild(frag);
-  cursor = end;
+      <div class="caption">${escapeHtml(c.caption)}</div>
+    </div>`;
+  curVid = document.getElementById('vid');
+  jumpEl.value = idx + 1;
+  prevB.disabled = idx === 0;
+  nextB.disabled = idx === view.length - 1;
+  playB.textContent = '⏸ pause';
+  curVid.addEventListener('play',  () => playB.textContent = '⏸ pause');
+  curVid.addEventListener('pause', () => playB.textContent = '⏵ play');
 }
 
-function hookCard(card) {
-  const vid = card.querySelector('video');
-  const url = card.dataset.video;
-  const wrap = card.querySelector('.vidwrap');
-  wrap.addEventListener('click', () => {
-    if (!card.classList.contains('loaded')) {
-      vid.src = url;
-      vid.load();
-      card.classList.add('loaded');
-      vid.play();
-    } else if (vid.paused) vid.play();
-    else vid.pause();
-  });
-}
+function go(d) { idx = Math.max(0, Math.min(view.length - 1, idx + d)); show(); }
 
-const io = new IntersectionObserver((entries) => {
-  for (const e of entries) {
-    if (e.isIntersecting && cursor < view.length) appendChunk();
-  }
-}, { rootMargin: '600px' });
-io.observe(sentinel);
+prevB.addEventListener('click', () => go(-1));
+nextB.addEventListener('click', () => go(+1));
+playB.addEventListener('click', () => { if (!curVid) return; if (curVid.paused) curVid.play(); else curVid.pause(); });
+jumpEl.addEventListener('change', () => { idx = Math.max(0, Math.min(view.length - 1, parseInt(jumpEl.value, 10) - 1 || 0)); show(); });
 
-function escapeHtml(s) {
-  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
+document.addEventListener('keydown', (e) => {
+  if (e.target === qEl || e.target === jumpEl) return;
+  if (e.key === 'ArrowLeft')  { go(-1); e.preventDefault(); }
+  if (e.key === 'ArrowRight') { go(+1); e.preventDefault(); }
+  if (e.key === ' ')          { if (curVid) { curVid.paused ? curVid.play() : curVid.pause(); } e.preventDefault(); }
+});
 
 let qTimer;
 qEl.addEventListener('input',  () => { clearTimeout(qTimer); qTimer = setTimeout(apply, 150); });
 sortEl.addEventListener('change', apply);
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 
 const themeBtn = document.getElementById('theme');
 function setTheme(t) {
